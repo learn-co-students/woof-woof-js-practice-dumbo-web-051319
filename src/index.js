@@ -1,13 +1,15 @@
 // VARIABLES -----------------------------------------
 
 const dogBar = document.querySelector('#dog-bar');
-const dogSheet = document.querySelector('#dog-info')
+const dogSheet = document.querySelector('#dog-info');
+const filterButton = document.querySelector('#good-dog-filter');
 
 // LISTENERS HANDLERS ---------------------------------
 
 document.addEventListener('DOMContentLoaded', getDogs);
 dogBar.addEventListener('click', findClickedDog);
 dogSheet.addEventListener('click', moralityHandler)
+filterButton.addEventListener('click', changeFilterText)
 
 function dogs(json){
   displayDogs(json);
@@ -69,14 +71,16 @@ function displayMorality(id, morality){
   }else{
     buttonMorals.innerText = 'Good Dog!';
   }
+  location.reload();
   // debugger;
 }
 
 function displayClickedDog(json){
+  let morality = ""
   if(json.isGoodDog){
-    var morality = "Good Dog!";
+    morality = "Good Dog!";
   }else{
-    var morality = "Bad Dog!";
+    let morality = "Bad Dog!";
   }
   // debugger;
   dogSheet.innerHTML = `
@@ -88,11 +92,36 @@ function displayClickedDog(json){
 }
 
 function displayDogs(json){
-  json.forEach((dog) => {
-    let span = document.createElement('span');
-    span.innerText = `${dog.name}`;
-    span.dataset.id = `${dog.id}`;
-    dogBar.append(span);
+  dogBar.innerHTML = ''
+  if(filterButton.innerText == "Filter good dogs: OFF") {
+    json.forEach((dog) => {
+      let span = document.createElement('span');
+      span.innerText = `${dog.name}`;
+      span.dataset.id = `${dog.id}`;
+      dogBar.append(span);
     // debugger;
-  });
+    });
+  }else{
+    json.forEach((dog) => {
+      if(dog.isGoodDog == true){
+        let span = document.createElement('span');
+        span.innerText = `${dog.name}`;
+        span.dataset.id = `${dog.id}`;
+        dogBar.append(span);
+      }
+    // debugger;
+    })
+  }
 }
+
+
+function changeFilterText(){
+  // debugger;
+  if(filterButton.innerText == "Filter good dogs: OFF"){
+    filterButton.innerText = "Filter good dogs: ON"
+  }else{
+    filterButton.innerText = "Filter good dogs: OFF"
+  }
+  getDogs();
+}
+// OTHER LOGIC ---------------------------------
